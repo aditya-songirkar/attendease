@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attendease
+  labels:
+    app: attendease
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: attendease
+  template:
+    metadata:
+      labels:
+        app: attendease
+    spec:
+      containers:
+        - name: attendease
+          image: IMAGE_PLACEHOLDER      # replaced by Jenkins with <user>/attendease:<build-number>
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: attendease-secret
+                  key: MONGODB_URI
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: attendease-secret
+                  key: JWT_SECRET
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"

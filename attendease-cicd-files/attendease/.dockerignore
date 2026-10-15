@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.env
+.git
+.github
+tests
+k8s
+Jenkinsfile
+README.md
+*.pdf
